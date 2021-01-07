@@ -3,18 +3,12 @@ using DAL;
 using DAL.UnitOfWorks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace nhom3project
 {
@@ -42,17 +36,14 @@ namespace nhom3project
                     Title = "Instance Job Portal API",
                     Version = "v1"
                 });
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    In = ParameterLocation.Header,
-                    Description = "Please insert JWT with Bearer into field",
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey
-                });
                 c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             });
+
+            services.Configure<IISServerOptions>(option =>
+            {
+                option.AllowSynchronousIO = true;
+            });
             services.AddCors();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IStudentLogic, StudentLogic>();
         }
@@ -65,9 +56,19 @@ namespace nhom3project
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Instance Job Portal API");
+                c.RoutePrefix = string.Empty;
+            });
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(x => x.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
 
             app.UseAuthorization();
 

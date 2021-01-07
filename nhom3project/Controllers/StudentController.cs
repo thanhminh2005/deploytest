@@ -1,22 +1,20 @@
 ﻿using BLL.BusinessLogics;
 using BLL.Models;
 using DAL.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace nhom3project.Controllers
 {
     [Route("api/students")]
-    public class StudentController : Controller
+    [ApiController]
+    public class StudentController : ControllerBase
     {
 
         private readonly IStudentLogic _studentLogic;
 
-        public StudentController (StudentLogic studentLogic)
+        public StudentController(IStudentLogic studentLogic)
         {
             _studentLogic = studentLogic;
         }
@@ -28,16 +26,16 @@ namespace nhom3project.Controllers
             return Ok(students);
         }
 
-        [HttpGet]
+        [HttpGet("{Id}")]
         public IActionResult GetOne(Guid Id)
         {
             Student student = _studentLogic.GetStudentById(Id);
             return Ok(student);
         }
         [HttpPost]
-        public IActionResult Post([FromBody]StudentCreateModel studentCreateModel)
+        public IActionResult Post([FromBody] StudentCreateModel studentCreateModel)
         {
-            if(studentCreateModel == null)
+            if (studentCreateModel == null)
             {
                 return BadRequest("Error");
             }
@@ -50,7 +48,7 @@ namespace nhom3project.Controllers
         }
 
         [HttpPut]
-        public IActionResult Update([FromForm]StudentUpdateModel studentUpdateModel)
+        public IActionResult Update([FromQuery] StudentUpdateModel studentUpdateModel)
         {
             Student student = _studentLogic.GetStudentById(studentUpdateModel.Id);
             if (student == null)
@@ -64,10 +62,10 @@ namespace nhom3project.Controllers
             return Ok("Student Info Updated");
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Delete(Guid Id)
+        [HttpDelete]
+        public IActionResult Delete([FromQuery] Guid Id)
         {
-            var check = await _studentLogic.DeleteStudent(Id);
+            var check = _studentLogic.DeleteStudent(Id);
             if (!check)
             {
                 return BadRequest("Error: Remove failed");

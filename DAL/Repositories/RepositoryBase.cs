@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.Repositories
 {
@@ -24,9 +21,9 @@ namespace DAL.Repositories
             _dbSet.Remove(entity);
         }
 
-        public async Task<T> FindByIdAsync(Guid id)
+        public T FindById(Guid id)
         {
-            return await _dbSet.FindAsync(id);
+            return _dbSet.Find(id);
         }
 
         public IQueryable<T> GetAll()
@@ -34,9 +31,9 @@ namespace DAL.Repositories
             return _dbSet;
         }
 
-        public async Task InsertAsync(T entity)
+        public void Insert(T entity)
         {
-            await _dbSet.AddAsync(entity);
+            _dbSet.AddAsync(entity);
         }
 
         public void Update(T entity)
@@ -49,9 +46,9 @@ namespace DAL.Repositories
     {
         IQueryable<T> GetAll();
 
-        public Task<T> FindByIdAsync(Guid id);
+        public T FindById(Guid id);
 
-        public Task InsertAsync(T entity);
+        public void Insert(T entity);
 
         void Update(T entity);
 

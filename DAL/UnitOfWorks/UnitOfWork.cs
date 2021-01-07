@@ -1,7 +1,6 @@
 ﻿using DAL.Repositories;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace DAL.UnitOfWorks
 {
@@ -15,14 +14,14 @@ namespace DAL.UnitOfWorks
             _context = context;
         }
 
-        public async Task CommitAsync()
+        public void Commit()
         {
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
 
-        public async Task DisposeAsync()
+        public void Dispose()
         {
-            await _context.DisposeAsync();
+            _context.Dispose();
             GC.SuppressFinalize(this);
         }
 
@@ -41,8 +40,8 @@ namespace DAL.UnitOfWorks
 
     public interface IUnitOfWork
     {
-            IRepositoryBase<T> GetRepository<T>() where T : class;
+        IRepositoryBase<T> GetRepository<T>() where T : class;
 
-        public Task CommitAsync();
+        public void Commit();
     }
 }

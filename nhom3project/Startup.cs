@@ -27,8 +27,8 @@ namespace nhom3project
             services.AddControllers();
             var appSettingsSection = Configuration.GetSection("AppSettings");
 
-            services.AddDbContext<DataContext>(o => o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
+            //services.AddDbContext<DataContext>(o => o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<DataContext>(options => options.UseNpgsql("Server=database-1.c9h8onkbtbz8.us-east-2.rds.amazonaws.com;Port=5432;Database=database-1;User Id=postgres;Password=12345678;"));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
